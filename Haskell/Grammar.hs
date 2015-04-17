@@ -20,6 +20,7 @@ addPRule rule rules = rule : rules
 
 
 {- Verification Functions -}
+-------------------------------------------------------------------- 
 
 --The non/terms need to be present in the grammar to be a valid rule
 verifyRule :: Rule -> Grammar -> Bool
@@ -29,6 +30,23 @@ verifyRule (rule:rules) (nTerm, term, p, s)
 	| head rule == 't' && contains (tail rule) term  = verifyRule rules (nTerm, term, p, s)
 	| otherwise                                      = False
 --verifyRule ["ta","nS","tb"] g1
+
+isNonTerm :: String -> Bool
+isNonTerm s = if head s == 'n' then True else False
+isNonTerm _ = False
+
+isTerm :: String -> Bool
+isTerm s = if head s == 't' then True else False
+isTerm _ = False
+
+{- Data Retrieval Functions -}
+-------------------------------------------------------------------- 
+getRules :: ProductionRule -> [Rule]
+getRules (n, r) = r
+
+getPRule :: NonTerminal -> [ProductionRule] -> ProductionRule
+getPRule nTerm []          = error "Undefined: no rule associated with nonTerminal"
+getPRule nTerm ((n, r):rs) = if nTerm == n then (n, r) else getPRule nTerm rs
 
 
 {- Show Functions -}
@@ -60,10 +78,11 @@ showGrammar (nTerm, term, p, s) = "N = " ++ show nTerm ++ "\n" ++ "T = " ++ show
 {- Test Input -}
 -------------------------------------------------------------------- 
 g1 :: Grammar 
-g1 = (["S", "P", "Q", "R"], ["a","b","c"], pRules1, "S")
+--g1 = (["S", "P", "Q", "R"], ["a","b","c"], pRules1, "nS")
+g1 = (["nS", "nP", "nQ", "nR"], ["ta","tb","tc"], pRules1, "nS")
 
 pRules1 :: [ProductionRule]
-pRules1 = [("S", [["ta","nP"],["tb","nQ"]]), ("P", [["ta"],["tc"]]), ("Q", [["ta","nS"],["tc"]])]
+pRules1 = [("nS", [["ta","nP"],["tb","nQ"]]), ("nP", [["ta"],["tc"]]), ("nQ", [["ta","nS"],["tc"]])]
 
 {- Indirect Functionality -}
 -------------------------------------------------------------------- 
