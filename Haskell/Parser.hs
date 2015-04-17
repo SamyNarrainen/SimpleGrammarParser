@@ -19,7 +19,7 @@ genInput (x:xs) = ('t':[x]) : genInput xs
 
 --'Brute Force' attempt to parse an Input (String) according to a Grammar
 parse :: Input -> Grammar -> Bool
-parse i g = parseAux i g (push s [])
+parse i (nTerm, term, p, s) = parseAux i (nTerm, term, p, s) (push s [])
 
 parseAux :: Input -> Grammar -> Stack -> Bool
 parseAux [] _ [] = True
@@ -34,6 +34,7 @@ parseAux i (nTerm, term, p, s) stack
 	--It's a terminal, so pop against the input and continue
 	| isTerm (fst (pop stack))         = if (head i) == fst (pop stack) then parseAux (tail i) (nTerm, term, p, s) (snd (pop stack)) else False
 	--TODO ADD CHECK FOR LAMBDA AT THE END OF INPUT ON PRODUCTION RULE
+
 
 --Given a list of rules, attempts them
 parseAux2 :: Input -> Grammar -> Stack -> [Rule] -> Bool
